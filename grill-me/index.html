@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>hosp_coaching | 병원 경영 디렉터 · 빅데이터 컨설턴트</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gold:        #B89468;
+      --gold-lt:     #CCAA84;
+      --gold-pale:   #EDE0CC;
+      --gold-glow:   rgba(184,148,104,0.18);
+      --bd:          #2A2018;
+      --bd2:         #352A20;
+      --bm:          #52402E;
+      --bl:          #7A6450;
+      --cream:       #F5EFE8;
+      --cream2:      #E6DDD2;
+      --white:       #FDFAF7;
+      --txt:         #2A2018;
+      --txt2:        #5E4C3A;
+      --txt3:        #8C7A68;
+      --shadow:      rgba(42,32,24,0.09);
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { font-size:18px; scroll-behavior:smooth; }
+    body {
+      font-family:'Noto Sans KR',sans-serif;
+      background:var(--cream);
+      color:var(--txt);
+      line-height:1.75;
+    }
+
+    /* ─── STICKY NAV ─── */
+    .topnav {
+      position:sticky; top:0; z-index:100;
+      background:rgba(38,30,22,0.97);
+      backdrop-filter:blur(8px);
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 24px; height:56px;
+      border-bottom:2px solid var(--gold);
+    }
+    .topnav-brand {
+      font-size:1rem; font-weight:900; color:var(--gold-lt);
+      cursor:pointer;
+      letter-spacing:-.01em;
+    }
+    .topnav-brand span { color:var(--cream); font-weight:400; font-size:.85rem; }
+    .topnav-links {
+      display:flex; gap:4px;
+    }
+    .topnav-links button {
+      background:none; border:none; color:rgba(255,249,238,.7);
+      font-family:'Noto Sans KR',sans-serif; font-size:.8rem; font-weight:500;
+      padding:6px 12px; border-radius:8px; cursor:pointer;
+      transition:all .2s;
+    }
+    .topnav-links button:hover { background:rgba(201,162,39,.2); color:var(--gold-lt); }
+
+    /* ─── PAGES ─── */
+    .page { display:none; animation:fadeIn .3s ease; }
+    .page.active { display:block; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+
+    /* ─── PROFILE ─── */
+    .profile {
+      background:linear-gradient(160deg, #2A2018 0%, #3A2C20 55%, #4A3828 100%);
+      padding:56px 24px 44px;
+      text-align:center;
+      position:relative; overflow:hidden;
+    }
+    .profile::before {
+      content:''; position:absolute; inset:0;
+      background:radial-gradient(ellipse 70% 50% at 50% -5%, rgba(184,148,104,.12) 0%, transparent 70%);
+      pointer-events:none;
+    }
+    .profile-inner { position:relative; z-index:1; max-width:640px; margin:0 auto; }
+
+    .avatar-ring {
+      width:148px; height:148px; border-radius:50%;
+      background:linear-gradient(135deg, var(--gold), var(--gold-lt));
+      padding:4px;
+      margin:0 auto 22px;
+      box-shadow:0 0 0 8px rgba(201,162,39,.18), 0 12px 40px var(--gold-glow);
+      display:flex; align-items:center; justify-content:center;
+    }
+    .avatar-inner {
+      width:100%; height:100%; border-radius:50%;
+      background:var(--bd2);
+      display:flex; align-items:center; justify-content:center;
+      font-size:58px; overflow:hidden;
+    }
+    .avatar-inner img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+
+    .profile-name {
+      font-size:2.1rem; font-weight:900; color:var(--gold-lt);
+      letter-spacing:-.02em; margin-bottom:6px;
+      text-shadow:0 2px 12px rgba(0,0,0,.35);
+    }
+    .profile-title {
+      font-size:.95rem; color:rgba(255,249,238,.85); margin-bottom:18px;
+    }
+    .profile-bio {
+      font-size:.9rem; color:rgba(255,249,238,.75);
+      line-height:1.85; margin-bottom:22px;
+    }
+    .profile-bio strong { color:var(--gold-lt); font-weight:700; }
+
+    .profile-stats {
+      display:flex; justify-content:center; gap:36px; margin-bottom:28px;
+    }
+    .stat { text-align:center; }
+    .stat-num { display:block; font-size:1.45rem; font-weight:900; color:var(--gold-lt); }
+    .stat-lbl { font-size:.75rem; color:rgba(255,249,238,.65); }
+
+    .social-row { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; }
+    .soc-btn {
+      display:inline-flex; align-items:center; gap:7px;
+      padding:9px 20px; border-radius:50px;
+      border:2px solid var(--gold); color:var(--gold-lt);
+      text-decoration:none; font-size:.88rem; font-weight:600;
+      background:rgba(201,162,39,.1);
+      transition:all .25s;
+    }
+    .soc-btn:hover { background:var(--gold); color:var(--bd); transform:translateY(-2px); }
+
+    /* ─── HIGHLIGHTS ─── */
+    .hl-section {
+      background:var(--white);
+      padding:32px 16px 28px;
+      border-bottom:1px solid var(--cream2);
+    }
+    .section-head {
+      text-align:center; font-size:1rem; font-weight:700;
+      color:var(--bm); margin-bottom:26px;
+    }
+    .section-head::after {
+      content:''; display:block; width:36px; height:3px;
+      background:var(--gold); border-radius:2px; margin:8px auto 0;
+    }
+    .hl-row {
+      display:flex; gap:18px; justify-content:center;
+      flex-wrap:wrap; max-width:680px; margin:0 auto;
+    }
+    .hl-item {
+      display:flex; flex-direction:column; align-items:center;
+      gap:8px; cursor:pointer; transition:transform .2s;
+    }
+    .hl-item:hover { transform:translateY(-5px); }
+    .hl-circle {
+      width:80px; height:80px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-size:2rem;
+      box-shadow:0 4px 18px var(--shadow);
+      position:relative;
+    }
+    .hl-circle::after {
+      content:''; position:absolute; inset:-3px; border-radius:50%;
+      background:linear-gradient(135deg,var(--gold),var(--gold-lt)); z-index:-1;
+    }
+    .hl-dementia  { background:linear-gradient(135deg,#7A6238,#A08050); }
+    .hl-ortho     { background:linear-gradient(135deg,#5A4870,#7A6898); }
+    .hl-spine     { background:linear-gradient(135deg,#3E6050,#5E8068); }
+    .hl-consult   { background:linear-gradient(135deg,#3A5470,#5A7490); }
+    .hl-caregiver { background:linear-gradient(135deg,#7A5040,#9A7060); }
+    .hl-lbl {
+      font-size:.82rem; font-weight:700; color:var(--txt);
+      text-align:center; line-height:1.3;
+    }
+
+    /* ─── LINK CARDS ─── */
+    .links-section {
+      padding:32px 20px 8px;
+      max-width:640px; margin:0 auto;
+    }
+    .link-card {
+      display:flex; align-items:center; gap:16px;
+      padding:16px 22px;
+      background:var(--white); border-radius:16px; margin-bottom:12px;
+      text-decoration:none; color:var(--txt);
+      box-shadow:0 2px 14px var(--shadow);
+      border:1.5px solid var(--cream2);
+      transition:all .28s;
+    }
+    .link-card:hover {
+      transform:translateY(-2px);
+      box-shadow:0 6px 28px var(--gold-glow);
+      border-color:var(--gold);
+    }
+    .lc-icon {
+      width:48px; height:48px; border-radius:12px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.45rem; flex-shrink:0;
+    }
+    .lc-info { flex:1; }
+    .lc-name { font-weight:700; font-size:1rem; color:var(--txt); }
+    .lc-desc { font-size:.8rem; color:var(--txt3); margin-top:2px; }
+    .lc-arrow { color:var(--gold); font-size:1.3rem; font-weight:900; }
+
+    /* ─── DIVIDER ─── */
+    .divider {
+      height:6px;
+      background:linear-gradient(90deg,var(--bd2),var(--gold),var(--bd2));
+      opacity:.18;
+    }
+
+    /* ─── SCRIPT GENERATOR ─── */
+    .gen-section {
+      padding:52px 20px 56px;
+      background:linear-gradient(180deg,var(--cream) 0%,var(--white) 100%);
+    }
+    .gen-inner { max-width:820px; margin:0 auto; }
+    .gen-title {
+      text-align:center; font-size:1.9rem; font-weight:900;
+      color:var(--txt); margin-bottom:8px; letter-spacing:-.02em;
+    }
+    .gen-title em { color:var(--gold); font-style:normal; }
+    .gen-sub {
+      text-align:center; font-size:.95rem; color:var(--txt2); margin-bottom:36px;
+    }
+
+    .gen-card {
+      background:var(--white); border-radius:24px;
+      padding:36px 40px;
+      box-shadow:0 8px 48px var(--shadow);
+      border:1.5px solid var(--cream2);
+    }
+    .form-grp { margin-bottom:28px; }
+    .form-lbl {
+      display:block; font-size:1rem; font-weight:700;
+      color:var(--txt); margin-bottom:14px;
+    }
+    .form-lbl em { color:var(--gold); font-style:normal; }
+
+    .topic-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+      gap:10px;
+    }
+    .opt-btn {
+      padding:13px 14px; border:2px solid var(--cream2);
+      border-radius:12px; background:var(--white);
+      cursor:pointer; text-align:center;
+      font-size:.9rem; font-weight:500; color:var(--txt2);
+      transition:all .2s;
+      font-family:'Noto Sans KR',sans-serif;
+    }
+    .opt-btn:hover { border-color:var(--gold); color:var(--txt); }
+    .opt-btn.sel {
+      border-color:var(--gold); background:var(--gold-pale);
+      color:var(--txt); font-weight:700;
+    }
+
+    .fmt-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+    .fmt-btn {
+      padding:16px 10px; border:2px solid var(--cream2);
+      border-radius:14px; background:var(--white);
+      cursor:pointer; text-align:center;
+      transition:all .2s;
+      font-family:'Noto Sans KR',sans-serif;
+    }
+    .fmt-btn:hover { border-color:var(--gold); }
+    .fmt-btn.sel { border-color:var(--gold); background:var(--gold-pale); }
+    .fmt-ico { font-size:1.9rem; display:block; margin-bottom:6px; }
+    .fmt-name { font-size:.88rem; font-weight:700; color:var(--txt2); display:block; }
+    .fmt-desc { font-size:.75rem; color:var(--txt3); display:block; margin-top:2px; }
+    .fmt-btn.sel .fmt-name { color:var(--txt); }
+
+    .gen-btn {
+      width:100%; padding:18px;
+      background:linear-gradient(135deg,var(--gold),var(--gold-lt));
+      border:none; border-radius:14px;
+      font-size:1.1rem; font-weight:900; color:var(--bd);
+      cursor:pointer; font-family:'Noto Sans KR',sans-serif;
+      box-shadow:0 4px 18px var(--gold-glow);
+      transition:all .28s; margin-top:4px;
+    }
+    .gen-btn:hover { transform:translateY(-2px); box-shadow:0 8px 28px var(--gold-glow); }
+    .gen-btn:active { transform:translateY(0); }
+
+    .output { display:none; margin-top:28px; }
+    .output.show { display:block; animation:fadeIn .3s ease; }
+    .output-hd {
+      display:flex; justify-content:space-between; align-items:center;
+      margin-bottom:10px;
+    }
+    .output-lbl { font-size:.9rem; font-weight:700; color:var(--bm); }
+    .copy-btn {
+      padding:8px 18px; background:var(--gold);
+      border:none; border-radius:8px;
+      font-size:.85rem; font-weight:700; color:var(--bd);
+      cursor:pointer; font-family:'Noto Sans KR',sans-serif;
+      transition:all .2s;
+    }
+    .copy-btn:hover { background:var(--gold-lt); }
+    .copy-btn.done { background:#2ecc71; color:#fff; }
+    .output-txt {
+      background:var(--cream); border:1.5px solid var(--cream2);
+      border-radius:14px; padding:22px 24px;
+      font-size:.9rem; line-height:2; color:var(--txt);
+      white-space:pre-wrap;
+      min-height:220px; max-height:520px; overflow-y:auto;
+    }
+
+    /* ─── CONTENT PAGES ─── */
+    .content-page { padding:28px 20px 48px; max-width:880px; margin:0 auto; }
+    .back-btn {
+      display:inline-flex; align-items:center; gap:8px;
+      padding:9px 18px; background:var(--cream2);
+      border:none; border-radius:10px; cursor:pointer;
+      font-size:.9rem; font-weight:500; color:var(--txt2);
+      margin-bottom:24px; font-family:'Noto Sans KR',sans-serif;
+      transition:all .2s;
+    }
+    .back-btn:hover { background:var(--gold-pale); color:var(--txt); }
+
+    .content-hd {
+      display:flex; align-items:center; gap:18px;
+      margin-bottom:28px; padding-bottom:18px;
+      border-bottom:2px solid var(--gold-pale);
+    }
+    .content-hd-ico { font-size:2.8rem; }
+    .content-hd-title { font-size:1.55rem; font-weight:900; color:var(--bd); }
+    .content-hd-sub { font-size:.88rem; color:var(--txt2); margin-top:3px; }
+
+    .info-card {
+      background:var(--white); border-radius:16px;
+      padding:24px 28px; margin-bottom:16px;
+      border-left:4px solid var(--gold);
+      box-shadow:0 2px 14px var(--shadow);
+    }
+    .info-card h3 {
+      font-size:1.05rem; font-weight:700; color:var(--bd); margin-bottom:14px;
+    }
+    .info-card ul { list-style:none; }
+    .info-card ul li {
+      padding:6px 0 6px 26px; position:relative;
+      font-size:.95rem; color:var(--txt2); line-height:1.65;
+    }
+    .info-card ul li::before {
+      content:'✓'; position:absolute; left:0;
+      color:var(--gold); font-weight:700;
+    }
+
+    .tip-box {
+      background:linear-gradient(135deg,var(--gold-pale),#fffadc);
+      border-radius:16px; padding:20px 26px;
+      margin-bottom:16px; border:1.5px solid var(--gold);
+    }
+    .tip-lbl {
+      font-size:.78rem; font-weight:900; color:var(--gold);
+      text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px;
+    }
+    .tip-box p { font-size:.93rem; color:var(--txt); line-height:1.8; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background:var(--bd);
+      color:rgba(255,249,238,.65);
+      text-align:center;
+      padding:34px 20px;
+      font-size:.83rem;
+      line-height:1.9;
+    }
+    footer .fn { color:var(--gold-lt); font-weight:700; font-size:.95rem; margin-bottom:6px; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width:640px) {
+      html { font-size:16px; }
+      .profile-name { font-size:1.7rem; }
+      .gen-card { padding:22px 18px; }
+      .topic-grid { grid-template-columns:repeat(2,1fr); }
+      .topnav-links button { font-size:.72rem; padding:5px 8px; }
+      .hl-circle { width:68px; height:68px; font-size:1.7rem; }
+    }
+    @media (min-width:1440px) {
+      html { font-size:20px; }
+      .profile { padding:72px 24px 56px; }
+      .gen-card { padding:48px 56px; }
+    }
+    @media (min-width:2000px) {
+      html { font-size:22px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ STICKY NAV ══ -->
+<nav class="topnav">
+  <div class="topnav-brand" onclick="showPage('home')">
+    hosp_coaching <span>| 병원 코칭</span>
+  </div>
+  <div class="topnav-links">
+    <button onclick="showPage('home')">홈</button>
+    <button onclick="showHL('dementia')">치매</button>
+    <button onclick="showHL('spine')">척추</button>
+    <button onclick="showHL('consult')">컨설팅</button>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════════════
+     HOME PAGE
+════════════════════════════════════════ -->
+<div id="pg-home" class="page active">
+
+  <!-- PROFILE -->
+  <section class="profile">
+    <div class="profile-inner">
+      <h1 class="profile-name">hosp_coaching</h1>
+      <p class="profile-title">병원 경영 디렉터 &middot; 빅데이터 컨설턴트</p>
+      <p class="profile-bio">
+        <strong>병원선택·진료비 판단코치</strong><br>
+        40~60대 보호자를 위한 척추·관절·치매 병원·진료과·진료비 코칭<br>
+        S서울병원 행정원장 | 심사평가원 11년 | 대학병원급 포함 100개 기관 컨설팅
+      </p>
+    </div>
+  </section>
+
+  <!-- HIGHLIGHTS -->
+  <section class="hl-section">
+    <p class="section-head">카테고리별 정보</p>
+    <div class="hl-row">
+      <div class="hl-item" onclick="showHL('dementia')">
+        <div class="hl-circle hl-dementia">🧠</div>
+        <span class="hl-lbl">치매·파킨슨</span>
+      </div>
+      <div class="hl-item" onclick="showHL('ortho')">
+        <div class="hl-circle hl-ortho">🦴</div>
+        <span class="hl-lbl">정형외과</span>
+      </div>
+      <div class="hl-item" onclick="showHL('spine')">
+        <div class="hl-circle hl-spine">🏥</div>
+        <span class="hl-lbl">척추병원</span>
+      </div>
+      <div class="hl-item" onclick="showHL('consult')">
+        <div class="hl-circle hl-consult">💼</div>
+        <span class="hl-lbl">병원컨설팅</span>
+      </div>
+      <div class="hl-item" onclick="showHL('caregiver')">
+        <div class="hl-circle hl-caregiver">❤️</div>
+        <span class="hl-lbl">보호자가이드</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUICK LINKS -->
+  <div class="links-section">
+    <a href="#" class="link-card">
+      <div class="lc-icon" style="background:#EDE4D4;">📋</div>
+      <div class="lc-info">
+        <div class="lc-name">병원 선택 체크리스트</div>
+        <div class="lc-desc">부모님 병원 결정 전 꼭 확인하세요</div>
+      </div>
+      <span class="lc-arrow">›</span>
+    </a>
+    <a href="javascript:showHL('caregiver')" class="link-card">
+      <div class="lc-icon" style="background:#DDE8E0;">💰</div>
+      <div class="lc-info">
+        <div class="lc-name">진료비 적정성 가이드</div>
+        <div class="lc-desc">적정 진료비 판단 기준 알아보기</div>
+      </div>
+      <span class="lc-arrow">›</span>
+    </a>
+    <a href="https://www.instagram.com/hosp_coaching/" target="_blank" rel="noopener noreferrer" class="link-card" style="border-color:var(--gold);background:linear-gradient(135deg,var(--white),var(--gold-pale));">
+      <div class="lc-icon" style="background:linear-gradient(135deg,#B89468,#CCAA84);font-size:1.6rem;">📸</div>
+      <div class="lc-info">
+        <div class="lc-name" style="color:var(--bd);">@hosp_coaching 인스타그램</div>
+        <div class="lc-desc">팔로워 8,851명 · 최신 병원 정보 바로가기</div>
+      </div>
+      <span class="lc-arrow" style="font-size:1.5rem;">›</span>
+    </a>
+  </div>
+
+
+  <footer>
+    <p class="fn">hosp_coaching</p>
+    <p>병원 경영 디렉터 &middot; 빅데이터 컨설턴트</p>
+    <p style="margin-top:8px;font-size:.78rem;">© 2025 hosp_coaching. All rights reserved.</p>
+  </footer>
+</div><!-- /home -->
+
+
+<!-- ════════════════════════════════════════
+     치매·파킨슨 PAGE
+════════════════════════════════════════ -->
+<div id="pg-dementia" class="page">
+  <div class="content-page">
+    <button class="back-btn" onclick="showPage('home')">← 홈으로</button>
+    <div class="content-hd">
+      <span class="content-hd-ico">🧠</span>
+      <div>
+        <div class="content-hd-title">치매·파킨슨</div>
+        <div class="content-hd-sub">부모님 인지 질환 대응 가이드</div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-lbl">💡 반바니 핵심 TIP</div>
+      <p>치매 의심 증상이 있다면 <strong>처음부터 신경과 전문의</strong>에게 가세요. 내과에서 시작하면 진단이 몇 달 늦어질 수 있습니다. 무료 조기 검진은 전국 <strong>치매안심센터(256개소)</strong>에서 받으실 수 있어요.</p>
+    </div>
+
+    <div class="info-card">
+      <h3>치매 조기 경고 신호 체크리스트</h3>
+      <ul>
+        <li>같은 말·질문을 반복하신다</li>
+        <li>최근 약속이나 사건을 기억하지 못하신다</li>
+        <li>가스 불이나 문단속을 자주 깜박하신다</li>
+        <li>가까운 길을 잃거나 날짜를 혼동하신다</li>
+        <li>성격이나 기분이 갑자기 변하셨다</li>
+        <li>일상적인 업무(은행, 요리 등) 처리가 어려워지셨다</li>
+      </ul>
+    </div>
+
+    <div class="info-card">
+      <h3>파킨슨 조기 경고 신호</h3>
+      <ul>
+        <li>가만히 있을 때 손·발이 떨린다 (안정 시 진전)</li>
+        <li>행동이 굼뜨고 느려지셨다</li>
+        <li>표정이 없어지거나 목소리가 작아지셨다</li>
+        <li>걸음이 느려지고 보폭이 작아지셨다</li>
+        <li>균형을 자주 잃고 넘어지실 뻔한다</li>
+      </ul>
+    </div>
+
+    <div class="info-card">
+      <h3>병원 선택 기준</h3>
+      <ul>
+        <li><strong>신경과 전문의</strong> 상주 여부 확인 (내과·가정의학과 아님!)</li>
+        <li>치매안심센터 연계 여부 확인</li>
+        <li>인지재활 프로그램 운영 병원 선택</li>
+        <li>초기 정밀 진단은 대학병원, 이후 지속 관리는 가까운 전문 클리닉</li>
+        <li>파킨슨은 신경과 중에서도 <strong>운동장애 클리닉</strong> 전담 여부 확인</li>
+      </ul>
+    </div>
+
+    <div class="info-card">
+      <h3>알아야 할 국가 지원 제도</h3>
+      <ul>
+        <li>치매안심센터: 전국 256개소, 무료 조기 검진 가능</li>
+        <li>장기요양보험: 치매 판정 시 등급 신청 → 요양 서비스 지원</li>
+        <li>치매치료관리비 지원: 월 최대 3만원 지원 (보건소 신청)</li>
+        <li>파킨슨병 산정특례: 본인부담 5~10%로 치료 가능</li>
+        <li>치매 가족 휴가제: 연 6일, 치매 어르신 단기 보호 서비스</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     정형외과 PAGE
+════════════════════════════════════════ -->
+<div id="pg-ortho" class="page">
+  <div class="content-page">
+    <button class="back-btn" onclick="showPage('home')">← 홈으로</button>
+    <div class="content-hd">
+      <span class="content-hd-ico">🦴</span>
+      <div>
+        <div class="content-hd-title">정형외과</div>
+        <div class="content-hd-sub">관절·뼈 치료 선택 가이드</div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-lbl">💡 반바니 핵심 TIP</div>
+      <p>정형외과는 <strong>"수술을 잘 하는 의사"</strong>와 <strong>"덜 수술하는 의사"</strong>를 구분해야 합니다. 수술 권유 전, 비수술 치료를 충분히 시도했는지 꼭 확인하세요. 두 번째 의견(Second Opinion)을 구하는 것을 두려워하지 마세요.</p>
+    </div>
+
+    <div class="info-card">
+      <h3>질환별 최적 병원 선택</h3>
+      <ul>
+        <li><strong>무릎 인공관절:</strong> 연간 시술 건수가 많은 전문병원이 유리</li>
+        <li><strong>고관절 골절:</strong> 빠른 수술이 중요 → 24시간 응급 수술 가능 병원</li>
+        <li><strong>어깨·회전근개:</strong> 관절경 수술 전문의 여부 확인</li>
+        <li><strong>재활:</strong> 수술 후 재활 프로그램이 있는지 반드시 확인</li>
+      </ul>
+    </div>
+
+    <div class="info-card">
+      <h3>꼭 확인해야 할 진료비 항목</h3>
+      <ul>
+        <li>무릎 인공관절 수술: 건강보험 적용 시 본인부담 약 100~200만원 수준</li>
+        <li>도수치료: 비급여, 1회 5~15만원 → 횟수 제한 여부 확인 필수</li>
+        <li>주사치료(PRP, 프롤로 등): 비급여, 1회 10~30만원 → 의학적 근거 확인</li>
+        <li>MRI: 특정 조건에서 건강보험 급여 가능 → 의사에게 먼저 질문</li>
+        <li>비급여 항목은 <strong>치료 전에 금액 고지받을 권리</strong>가 있습니다</li>
+      </ul>
+    </div>
+
+    <div class="info-card">
+      <h3>의사에게 꼭 물어볼 질문</h3>
+      <ul>
+        <li>"수술 안 하면 어떻게 됩니까?"</li>
+        <li>"비수술 치료를 얼마나 더 해봐야 합니까?"</li>
+        <li>"이 수술을 1년에 몇 건 하십니까?"</li>
+        <li>"수술 후 재활은 어떻게 진행됩니까?"</li>
+        <li>"이 주사(도수치료)의 의학적 근거는 무엇입니까?"</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     척추병원 PAGE
+════════════════════════════════════════ -->
+<div id="pg-spine" class="page">
+  <div class="content-page">
+    <button class="back-btn" onclick="showPage('home')">← 홈으로</button>
+    <div class="content-hd">
+      <span class="content-hd-ico">🏥</span>
+      <div>
+        <div class="content-hd-title">척추병원</div>
+        <div class="content-hd-sub">척추 질환 병원 선택 핵심 가이드</div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-lbl">⚠️ 중요 주의사항</div>
+      <p>척추 수술은 한 번 하면 되돌리기 어렵습니다. 수술 권유를 받았다면 최소 <strong>2~3군데에서 진단</strong>을 받아보세요. <strong>"수술 안 해도 된다"고 말하는 의사</strong>를 오히려 신뢰하세요.</p>
+    </div>
+
+    <div class="info-card">
+      <h3>척추병원 선택 핵심 기준</h3>
+      <ul>
+        <li>신경외과 vs 정형외과 척추 전문의 → 둘 다 가능, <strong>의사 경력 확인이 더 중요</strong></li>
+        <li>최소침습 수술 가능 여부 (절개 최소화 = 회복 빠름)</li>
+        <li>수술 건수와 합병증 통계를 공개하는 병원 우선 고려</li>
+        <li>대학병원급 장비 보유 여부 (O-arm, 내비게이션 수술 등)</li>
+        <li>수술 후 재활 프로그램 운영 여부</li>
+      </ul>
+    </div>
+
+    <div class="info-card">
+      <h3>수술 결정 전 체크리스트</h3>
+      <ul>
+        <li>물리치료·주사치료 등 비수술 치료를 3~6개월 이상 충분히 시도했는가?</li>
+        <li>두 곳 이상의 전문의에게 진단을 받았는가?</li>
+        <li>수술 안 할 경우의 예후를 명확히 들었는가?</li>
+        <li>담당 의사의 연간 해당 수술 건수를 확인했는가?</li>
+        <li>수술 후 재활 계획을 구체적으로 안내받았는가?</li>
+      </ul>
+    </div>
+
+    <div class="info-card">
+      <h3>의사에게 꼭 물어볼 5가지</h3>
+      <ul>
+        <li>"수술 안 하면 어떻게 됩니까?"</li>
+        <li>"비수술 치료를 얼마나 더 해봐야 합니까?"</li>
+        <li>"이 수술을 1년에 몇 건 하십니까?"</li>
+        <li>"최소침습(내시경) 수술이 가능합니까?"</li>
+        <li>"수술 후 재활은 어떻게 진행됩니까?"</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     병원컨설팅 PAGE
+════════════════════════════════════════ -->
+<div id="pg-consult" class="page">
+  <div class="content-page">
+    <button class="back-btn" onclick="showPage('home')">← 홈으로</button>
+    <div class="content-hd">
+      <span class="content-hd-ico">💼</span>
+      <div>
+        <div class="content-hd-title">병원컨설팅</div>
+        <div class="content-hd-sub">반바니의 전문 병원 선택 코칭 서비스</div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-lbl">📞 상담 신청</div>
+      <p>부모님의 병원 선택이 막막하신가요? 심사평가원 11년, S서울병원 행정원장 경력의 반바니가 직접 도와드립니다. <strong>카카오 채널 또는 인스타그램 DM</strong>으로 문의주세요.</p>
+    </div>
+
+    <div class="info-card">
+      <h3>컨설팅 서비스 내용</h3>
+      <ul>
+        <li>1:1 맞춤 병원·의사 선택 코칭</li>
+        <li>진료비 명세서 분석 및 적정성 검토</li>
+        <li>진료 동행 서비스 (의사 질문 대리 및 설명 정리)</li>
+        <li>수술 여부 결정을 위한 Second Opinion 지원</li>
+        <li>퇴원 후 재활·요양 병원 선택 지원</li>
+        <li>100개 이상 대학병원급 기관 네트워크 활용</li>
+      </ul>
+    </div>
+
+    <div class="info-card">
+      <h3>이런 분들께 추천합니다</h3>
+      <ul>
+        <li>부모님 병원 진단 결과가 이해되지 않는 분</li>
+        <li>수술 권유를 받았는데 믿어도 될지 모르겠는 분</li>
+        <li>진료비가 적정한지 확인하고 싶은 분</li>
+        <li>어느 병원이 좋은지 객관적 조언이 필요한 분</li>
+        <li>부모님이 혼자 병원에 다니시는 분</li>
+      </ul>
+    </div>
+
+    <div class="info-card">
+      <h3>진료비 적정성 확인 방법</h3>
+      <ul>
+        <li>급여 항목과 비급여 항목을 구분해서 확인</li>
+        <li>비급여 항목: 치료 전에 금액 고지받을 법적 권리 있음 (의료법 제45조)</li>
+        <li>진료비 영수증 반드시 받아서 3년 이상 보관</li>
+        <li>의심스러운 항목은 <strong>건강보험심사평가원 ☎ 1644-2000</strong>에 문의</li>
+        <li>진료비 명세서 세부 내역 발급은 무료로 요청 가능</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     보호자가이드 PAGE
+════════════════════════════════════════ -->
+<div id="pg-caregiver" class="page">
+  <div class="content-page">
+    <button class="back-btn" onclick="showPage('home')">← 홈으로</button>
+    <div class="content-hd">
+      <span class="content-hd-ico">❤️</span>
+      <div>
+        <div class="content-hd-title">보호자 가이드</div>
+        <div class="content-hd-sub">병원 동행 시 꼭 알아야 할 것들</div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-lbl">💡 반바니 핵심 TIP</div>
+      <p>진료 시간은 평균 <strong>5~7분</strong>. 이 짧은 시간에 모든 것을 설명하기 어렵습니다. <strong>핵심 증상 3가지, 질문 3가지</strong>로 압축해서 가세요. 준비된 보호자임을 보여주면 의사도 더 성실하게 답해줍니다.</p>
+    </div>
+
+    <div class="info-card">
+      <h3>진료 전 준비 체크리스트</h3>
+      <ul>
+        <li>증상 시작일·변화 과정 메모 준비 (언제부터, 얼마나 심한지)</li>
+        <li>복용 중인 모든 약 목록 (처방약 + 영양제 + 한약)</li>
+        <li>이전 병원 진료기록·영상자료 (CD, 필름) 가져가기</li>
+        <li>질문 리스트 3~5개 미리 작성</li>
+        <li>필요하면 진료 내용 녹음 (사전 동의 후)</li>
+      </ul>
+    </div>
+
+    <div class="info-card">
+      <h3>환자동행서비스란?</h3>
+      <ul>
+        <li>의료 전문가가 진료실에 함께 동행하는 서비스</li>
+        <li>의사의 설명을 정확히 이해하고 질문을 대신 해드림</li>
+        <li>진료 후 다음 단계 결정에 도움</li>
+        <li>자녀가 멀리 사시거나 부모님이 혼자 오시는 경우 특히 유용</li>
+        <li>수술 여부 결정이 필요할 때 전문가의 도움으로 합리적 선택 가능</li>
+      </ul>
+    </div>
+
+    <div class="info-card">
+      <h3>진료비 명세서 확인법</h3>
+      <ul>
+        <li>급여 항목: 건강보험 적용, 본인부담 20~60%</li>
+        <li>비급여 항목: 전액 본인 부담, 병원마다 가격 다름</li>
+        <li>진료비 세부내역서 발급 요청은 무료 (퇴원 시 꼭 요청)</li>
+        <li>이상하다 싶으면 건강보험심사평가원(1644-2000) 문의</li>
+        <li>연간 의료비 초과 시 실손보험 + 의료비 세액공제 활용</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  /* ── PAGE NAVIGATION ── */
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('pg-' + id).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function showHL(name) {
+    showPage(name);
+  }
+
+  function scrollGen() {
+    showPage('home');
+    setTimeout(() => {
+      document.getElementById('gen-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  }
+
+  /* ── SCRIPT GENERATOR ── */
+  let curTopic = null, curFmt = null;
+
+  function selTopic(btn) {
+    document.querySelectorAll('#topic-grid .opt-btn').forEach(b => b.classList.remove('sel'));
+    btn.classList.add('sel');
+    curTopic = btn.dataset.v;
+  }
+
+  function selFmt(btn) {
+    document.querySelectorAll('#fmt-grid .fmt-btn').forEach(b => b.classList.remove('sel'));
+    btn.classList.add('sel');
+    curFmt = btn.dataset.v;
+  }
+
+  function genScript() {
+    if (!curTopic || !curFmt) {
+      alert('주제와 형식을 모두 선택해주세요!');
+      return;
+    }
+    const txt = SCRIPTS[curTopic]?.[curFmt] || '준비 중인 대본입니다.';
+    document.getElementById('output-txt').textContent = txt;
+    const out = document.getElementById('output');
+    out.classList.add('show');
+    const copyBtn = document.getElementById('copy-btn');
+    copyBtn.textContent = '📋 복사하기';
+    copyBtn.classList.remove('done');
+    setTimeout(() => out.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+  }
+
+  function copyScript() {
+    const txt = document.getElementById('output-txt').textContent;
+    navigator.clipboard.writeText(txt).then(() => {
+      const btn = document.getElementById('copy-btn');
+      btn.textContent = '✅ 복사 완료!';
+      btn.classList.add('done');
+      setTimeout(() => { btn.textContent = '📋 복사하기'; btn.classList.remove('done'); }, 2200);
+    });
+  }
+
+  /* ── SCRIPT TEMPLATES ── */
+  const SCRIPTS = {
+
+    hospital_choice: {
+      reels: `🎬 [릴스 대본] 병원 선택 기준
+
+[오프닝 0~3초]
+자막: "부모님 병원, 어떻게 고르세요?"
+나레이션: "혹시 유명하다는 이유만으로 대형병원 가고 계신가요?"
+
+[본문 3~22초]
+슬라이드 1 ─
+❌ 이렇게 고르면 안 돼요
+• "큰 병원이니까 괜찮겠지"
+• "TV에 나왔으니까"
+• "친구가 좋다고 해서"
+
+슬라이드 2 ─
+✅ 이렇게 골라야 해요
+① 진료과 전문성 먼저 확인
+② 해당 질환 수술·치료 건수 확인
+③ 의사 1인당 진료 시간 확인
+
+[클로징 22~30초]
+나레이션: "병원 이름보다 중요한 건, 내 부모님에게 맞는 병원이에요."
+자막: "체크리스트는 프로필 링크에서 확인하세요 🔗"
+
+#병원선택 #부모님병원 #보호자가이드 #반바니 #hosp_coaching`,
+
+      cardnews: `🃏 [카드뉴스] 병원 선택 기준 (6장)
+
+[표지 1장]
+부모님 병원,
+이렇게 고르세요 🏥
+
+[2장]
+❌ 이렇게 고르면 안 돼요
+• "유명하니까"
+• "TV에 나왔으니까"
+• "친구가 좋다고 해서"
+
+[3장]
+✅ 병원 선택 3가지 기준
+① 진료과 전문성
+② 해당 질환 치료 실적
+③ 의사 1인당 진료 시간
+
+[4장]
+질환별 최적 병원이 달라요
+🧠 치매·파킨슨 → 신경과 전문의
+🦴 척추·관절 → 척추전문병원
+❤️ 심장 질환 → 심장센터 전문병원
+
+[5장]
+꼭 물어보세요!
+"이 수술, 1년에 몇 건 하세요?"
+많이 해본 의사가 잘 합니다
+
+[6장 마무리]
+반바니와 함께
+현명한 병원 선택을 시작하세요
+
+📌 @hosp_coaching 프로필 링크`,
+
+      post: `📝 [피드 포스트] 병원 선택 기준
+
+부모님 병원 선택, 어떻게 하고 계신가요?
+
+많은 보호자분들이 "유명하다니까", "크니까" 라는 이유만으로 병원을 선택하는 걸 보면 마음이 조마조마해요.
+
+저는 S서울병원 행정원장 11년, 건강보험심사평가원 11년을 보내면서 한 가지를 확실히 배웠어요.
+
+👉 병원 선택에는 '공식'이 있다는 것.
+
+이름 있는 대형병원이 언제나 정답이 아니에요.
+질환별로, 상황별로 최선의 선택이 달라집니다.
+
+[저장해두세요! 💾]
+
+✅ 병원 선택 핵심 기준 3가지
+
+① 진료과 전문성
+  내과 의사에게 척추 진료를 받고 있지 않나요?
+  신경과·신경외과 구분부터 확인하세요
+
+② 해당 질환 치료·수술 건수
+  많이 해본 의사가 잘 합니다
+  심사평가원 홈페이지에서 확인 가능
+
+③ 의사 1인당 진료 시간
+  하루 100명 보는 의사는 한 명당 5분도 안 줍니다
+
+더 자세한 내용은 프로필 링크에서 확인하세요 🔗
+
+#병원선택 #부모님건강 #40대50대 #보호자코칭 #반바니 #hosp_coaching`
+    },
+
+    doctor_choice: {
+      reels: `🎬 [릴스 대본] 의사·진료과 선택법
+
+[오프닝 0~3초]
+자막: "같은 증상, 어느 과로 가야 할까요?"
+나레이션: "진료과를 잘못 선택하면 시간과 돈을 낭비해요"
+
+[본문 3~22초]
+슬라이드 1 ─
+허리·다리 통증
+→ 정형외과? 신경외과?
+
+정답: 증상에 따라 달라요!
+• 뼈·관절 문제 → 정형외과
+• 신경 압박 문제 → 신경외과
+• 판단 어려울 땐 → 척추전문병원에서 종합 판단
+
+슬라이드 2 ─
+기억력 저하·떨림?
+→ 내과 ❌  신경과 ✅
+
+[클로징 22~30초]
+나레이션: "첫 진료과 선택이 치료 방향을 결정합니다"
+자막: "더 자세한 가이드는 프로필 링크에서 확인하세요 🔗"
+
+#진료과선택 #의사선택 #부모님건강 #반바니 #hosp_coaching`,
+
+      cardnews: `🃏 [카드뉴스] 의사·진료과 선택법 (7장)
+
+[표지 1장]
+어느 과, 어느 의사에게
+가야 할까요?
+
+[2장]
+진료과 선택이 왜 중요한가요?
+같은 허리 통증이라도
+치료 방향이 완전히 달라져요
+
+[3장]
+증상별 진료과 안내
+🧠 기억력 저하·떨림 → 신경과
+🦴 관절 통증·골절 → 정형외과
+💪 팔다리 저림·허리 방사통 → 신경외과
+❤️ 가슴 통증 → 심장내과·흉부외과
+
+[4장]
+좋은 의사 찾는 법
+✅ 해당 질환 전문 학회 인증
+✅ 수련 병원·전공 경력 확인
+✅ 연간 수술·시술 건수 확인
+
+[5장]
+의사에게 꼭 물어보세요
+"이 치료를 받지 않으면 어떻게 되나요?"
+"다른 치료 방법은 없나요?"
+
+[6장]
+Second Opinion
+받는 것, 전혀 실례가 아닙니다
+중요한 결정일수록 꼭 하세요!
+
+[7장 마무리]
+@hosp_coaching
+반바니가 함께 도와드립니다`,
+
+      post: `📝 [피드 포스트] 의사·진료과 선택법
+
+"어느 과를 가야 할지 모르겠어요"
+
+가장 많이 받는 질문 중 하나예요.
+사실 이게 정말 중요한 문제예요.
+
+첫 진료과 선택이 이후 치료의 방향을 결정하거든요.
+
+실제로 이런 일이 있었어요.
+
+한 보호자분이 아버지의 손 떨림을 내과에서 3개월 치료했는데 전혀 좋아지지 않았어요. 신경과로 옮겨서 파킨슨 진단을 받고 나서야 제대로 된 치료를 시작할 수 있었어요.
+
+[증상별 진료과 가이드 💊]
+
+🧠 기억력 저하·성격 변화·손 떨림
+   → 신경과 (내과 아님!)
+
+🦴 관절 통증·골절·무릎 문제
+   → 정형외과
+
+💪 팔다리 저림·허리 통증 + 다리 방사통
+   → 신경외과 또는 척추전문병원
+
+이미 진단을 받으셨다면?
+담당 의사의 세부 전공도 꼭 확인하세요.
+같은 신경과라도 전공이 다릅니다.
+
+저장해두셨다가 필요할 때 활용하세요! 💾
+
+#진료과선택 #의사선택 #부모님건강 #보호자가이드 #반바니 #hosp_coaching`
+    },
+
+    medical_fee: {
+      reels: `🎬 [릴스 대본] 진료비 적정성
+
+[오프닝 0~3초]
+자막: "이 진료비, 적정한 건가요?"
+나레이션: "영수증 받고 이상하다 느껴본 적 있으세요?"
+
+[본문 3~22초]
+슬라이드 1 ─
+진료비 확인, 이렇게 하세요
+
+📋 영수증 꼭 받기
+→ 급여 vs 비급여 항목 구분 확인
+
+슬라이드 2 ─
+💡 비급여 항목 주의
+치료 전 금액을 물어볼 권리가 있어요
+(의료법 제45조)
+
+슬라이드 3 ─
+📞 이상하면 문의하세요
+건강보험심사평가원
+☎ 1644-2000 (무료)
+
+[클로징 22~30초]
+나레이션: "영수증은 3년간 꼭 보관하세요"
+자막: "진료비 체크리스트, 프로필 링크에서 받으세요 🔗"
+
+#진료비 #의료비 #건강보험 #반바니 #hosp_coaching`,
+
+      cardnews: `🃏 [카드뉴스] 진료비 적정성 (6장)
+
+[표지 1장]
+이 진료비,
+적정한 건가요? 💰
+
+[2장]
+진료비에는 두 종류가 있어요
+✅ 급여 항목: 건강보험 적용 (저렴)
+❌ 비급여 항목: 전액 본인 부담 (비쌈)
+
+[3장]
+주의할 비급여 항목
+• 도수치료 (1회 5~15만원)
+• 주사치료 PRP·프롤로 등 (1회 10~30만원)
+• 특수 MRI·CT
+• 1인실 차액
+• 한방 추나요법
+
+[4장]
+이런 권리가 있어요!
+치료 전 비급여 항목 금액을
+고지받을 권리가 있습니다
+(의료법 제45조)
+
+[5장]
+이상한 진료비 신고하세요
+건강보험심사평가원
+☎ 1644-2000 (무료)
+
+[6장 마무리]
+영수증은 3년간 보관하세요
+진료비 명세서 분석이 필요하시면
+@hosp_coaching 반바니에게 문의하세요`,
+
+      post: `📝 [피드 포스트] 진료비 적정성
+
+진료비 영수증, 꼼꼼히 보시나요?
+
+저는 심사평가원에서 11년 동안 진료비 심사를 했어요.
+그때 정말 많이 봤던 장면이 있어요.
+
+환자분들이 영수증을 받고 '이게 맞나?' 싶어도 그냥 내는 경우요.
+사실은 따져볼 권리가 있는데 말이에요.
+
+[꼭 알아야 할 진료비 상식 💡]
+
+① 비급여 항목은 치료 전에 금액을 알 권리가 있어요
+   "이 주사, 얼마짜리예요?" 당당히 물어보세요
+
+② 의심스러운 항목은 심사평가원에 문의하세요
+   ☎ 1644-2000 (무료, 이름 안 밝혀도 돼요)
+
+③ 영수증은 최소 3년 보관하세요
+   건강보험 환급받을 때 필요해요
+
+④ 연간 의료비가 일정 기준 초과 시
+   실손보험 + 의료비 세액공제 가능해요
+
+[특히 주의할 비급여 항목]
+• 도수치료 (1회 5~15만원)
+• PRP·프롤로 주사 (1회 10~30만원)
+• 1인실 차액 (하루 10~30만원)
+
+이상하다 싶으면 꼭 확인해보세요!
+
+#진료비 #비급여 #건강보험 #의료비절약 #반바니 #hosp_coaching`
+    },
+
+    patient_escort: {
+      reels: `🎬 [릴스 대본] 환자동행서비스
+
+[오프닝 0~3초]
+자막: "부모님 혼자 병원 보내기 불안하세요?"
+나레이션: "혼자 다녀오신 부모님, 의사 말 제대로 들으셨을까요?"
+
+[본문 3~22초]
+슬라이드 1 ─
+이런 일 있으셨나요?
+"뭐라고 했는지 모르겠어"
+"그냥 괜찮다고 했어..."
+"수술하라는 것 같았어"
+
+슬라이드 2 ─
+환자동행서비스란?
+의료 전문가가 진료실에 함께 들어가
+✅ 의사 설명 정확히 이해
+✅ 중요한 질문 대신 해드려요
+✅ 다음 치료 방향 함께 결정
+
+[클로징 22~30초]
+나레이션: "중요한 진료, 혼자 보내지 마세요"
+자막: "동행서비스 문의: DM @hosp_coaching"
+
+#환자동행 #병원동행 #보호자 #반바니 #hosp_coaching`,
+
+      cardnews: `🃏 [카드뉴스] 환자동행서비스 (6장)
+
+[표지 1장]
+부모님 진료,
+혼자 보내지 마세요 🤝
+
+[2장]
+이런 상황이 있으셨나요?
+"의사가 뭐라고 했는지 모르겠어"
+"그냥 괜찮다고 했어..."
+"수술하라고 하는 것 같았어"
+
+[3장]
+환자동행서비스란?
+의료 전문가가 진료실에 동행해
+부모님 대신 듣고, 묻고, 기록해 드리는 서비스
+
+[4장]
+이런 분들께 필요해요
+👨‍👩‍👧 자녀가 멀리 사는 경우
+👴 부모님이 혼자 오시는 경우
+🏥 수술 여부 결정해야 할 때
+📋 진단 결과 이해가 안 될 때
+
+[5장]
+반바니 동행서비스
+S서울병원 행정원장 · 심사평가원 11년
+병원 내부를 가장 잘 아는 전문가와 함께
+
+[6장 마무리]
+중요한 진료일수록
+혼자 가지 마세요
+문의: DM @hosp_coaching`,
+
+      post: `📝 [피드 포스트] 환자동행서비스
+
+"엄마가 혼자 병원 다녀오셨는데, 의사가 뭐라고 했는지 모르겠어요."
+
+이런 연락을 정말 많이 받아요.
+
+사실 이게 당연한 일이에요.
+의사는 전문 용어로, 빠르게, 5~7분 안에 모든 걸 설명하거든요.
+
+처음 듣는 병명, 생소한 수술 이름...
+60~70대 어르신이 혼자 다 이해하기 어렵죠.
+
+그래서 제가 하는 일이 '환자동행'이에요.
+
+[환자동행서비스 소개 🤝]
+
+제가 직접 진료실에 함께 들어가서
+
+✅ 의사의 설명을 정확히 이해하고
+✅ 필요한 질문을 대신 해드리고
+✅ 진료 후 다음 단계를 함께 결정해 드려요
+
+[이런 분들께 특히 필요해요]
+• 자녀가 다른 도시에 살고 있는 경우
+• 수술 권유를 받았는데 확신이 없을 때
+• 진단 결과가 너무 복잡하게 느껴질 때
+
+중요한 진료, 혼자 보내지 마세요.
+더 자세한 내용은 DM으로 문의주세요.
+
+#환자동행 #병원동행서비스 #부모님건강 #보호자 #반바니 #hosp_coaching`
+    },
+
+    dementia: {
+      reels: `🎬 [릴스 대본] 치매·파킨슨
+
+[오프닝 0~3초]
+자막: "부모님 이러시면 신경과 바로 가세요!"
+나레이션: "이 증상, 그냥 넘기면 안 돼요"
+
+[본문 3~22초]
+치매 조기 신호 체크!
+□ 같은 말을 반복하신다
+□ 약속을 자주 잊으신다
+□ 가스 불을 자주 깜박하신다
+□ 성격이 갑자기 변하셨다
+□ 가까운 길을 잃으신 적 있다
+
+2개 이상이면?
+→ 신경과 전문의 진료 받으세요
+(내과 아님!)
+
+[클로징 22~30초]
+나레이션: "치매는 빨리 발견할수록 늦출 수 있어요"
+자막: "무료 검진: 전국 치매안심센터 256개소"
+
+#치매 #파킨슨 #치매조기발견 #반바니 #hosp_coaching`,
+
+      cardnews: `🃏 [카드뉴스] 치매·파킨슨 (7장)
+
+[표지 1장]
+부모님 이런 증상,
+그냥 넘기지 마세요 🧠
+
+[2장]
+치매 조기 경고 신호
+□ 같은 말·질문 반복
+□ 최근 약속·사건 기억 못함
+□ 길 잃거나 날짜 혼동
+□ 성격·기분 갑자기 변화
+□ 일상 업무 처리 어려움
+
+[3장]
+파킨슨 조기 경고 신호
+□ 손·발 떨림 (가만히 있을 때)
+□ 행동이 굼뜨고 느려짐
+□ 표정 없어짐·목소리 작아짐
+□ 걸음이 느려지고 보폭이 작아짐
+□ 균형 자주 잃음
+
+[4장]
+어느 과로 가야 하나요?
+✅ 신경과 전문의
+❌ 내과 (전문이 아니에요)
+
+[5장]
+무료로 받을 수 있어요!
+전국 256개 치매안심센터
+무료 조기 검진 서비스
+"치매안심센터" 검색 → 가까운 곳 방문
+
+[6장]
+치료비 지원도 있어요
+• 치매치료관리비: 월 최대 3만원
+• 장기요양보험: 등급 신청 가능
+• 파킨슨 산정특례: 본인부담 5~10%
+
+[7장 마무리]
+빨리 발견할수록
+늦출 수 있습니다
+@hosp_coaching 반바니`,
+
+      post: `📝 [피드 포스트] 치매·파킨슨
+
+"요즘 엄마가 같은 말을 자꾸 반복하시는데... 그냥 나이 드셔서 그런 거겠죠?"
+
+이 말을 들을 때마다 마음이 조마조마해요.
+
+치매는 "나이 들면 생기는 것"이 아니에요.
+조기에 발견하면 진행 속도를 분명히 늦출 수 있거든요.
+
+[치매 조기 신호 체크리스트 🧠]
+이 중 2개 이상 해당되면 신경과 전문의를 만나보세요.
+
+□ 같은 말·질문을 반복하신다
+□ 최근 약속이나 사건을 기억 못하신다
+□ 가스 불이나 문단속을 자주 깜박하신다
+□ 가까운 길을 잃거나 날짜를 혼동하신다
+□ 성격이나 기분이 갑자기 변하셨다
+
+[중요!]
+신경과 전문의에게 가세요.
+내과에서 시작하면 진단이 몇 달 늦어질 수 있어요.
+
+무료 치매 검진은 전국 256개 치매안심센터에서 받으실 수 있어요.
+포털에 "치매안심센터"로 검색하시면 가까운 곳이 바로 나와요.
+
+걱정이 되신다면 일단 검진부터!
+이상 없으면 다행, 있으면 빨리 알수록 좋으니까요.
+
+#치매 #치매예방 #파킨슨 #부모님건강 #40대50대 #반바니 #hosp_coaching`
+    },
+
+    spine: {
+      reels: `🎬 [릴스 대본] 척추·관절
+
+[오프닝 0~3초]
+자막: "척추 수술 권유받으셨나요?"
+나레이션: "바로 결정하지 마세요. 먼저 이것부터 하세요."
+
+[본문 3~22초]
+척추 수술 결정 전 필수 체크!
+
+① 비수술 치료를 충분히 했나요?
+   3~6개월 물리치료·주사치료 먼저
+
+② 두 군데 이상 진단 받으셨나요?
+   Second Opinion은 필수예요
+
+③ 의사에게 물어보세요
+   "수술 안 하면 어떻게 되나요?"
+
+[클로징 22~30초]
+나레이션: "척추 수술은 되돌리기 어렵습니다"
+자막: "결정 전 반바니와 먼저 상담하세요 @hosp_coaching"
+
+#척추수술 #허리디스크 #척추병원 #반바니 #hosp_coaching`,
+
+      cardnews: `🃏 [카드뉴스] 척추·관절 (7장)
+
+[표지 1장]
+척추 수술 권유받으셨나요?
+바로 결정하지 마세요! 🦴
+
+[2장]
+척추 수술 전 꼭 확인하세요
+수술은 한 번 하면 되돌리기 어렵습니다
+
+[3장]
+비수술 치료를 먼저 해보셨나요?
+✅ 물리치료 3개월 이상
+✅ 주사치료 (신경차단술 등)
+✅ 운동 치료 프로그램
+이것들을 충분히 시도했나요?
+
+[4장]
+두 번째 의견 꼭 받으세요!
+3곳에서 "수술 필요"라고 하면
+그때 결정해도 늦지 않아요
+
+[5장]
+의사에게 꼭 물어보세요
+"이 수술을 1년에 몇 건 하세요?"
+"수술 안 하면 어떻게 되나요?"
+"최소침습 수술이 가능한가요?"
+
+[6장]
+좋은 척추병원 고르는 법
+✅ 최소침습 수술 가능 여부
+✅ 수술 후 재활 프로그램
+✅ 합병증 발생 시 대응 체계
+
+[7장 마무리]
+중요한 결정일수록
+전문가의 도움을 받으세요
+@hosp_coaching 반바니`,
+
+      post: `📝 [피드 포스트] 척추·관절
+
+"어머니가 척추 수술을 받으라는데 어떻게 해야 하나요?"
+
+이 질문, 정말 많이 받아요.
+
+제가 드리고 싶은 첫 번째 말은 이거예요.
+"바로 결정하지 마세요."
+
+저는 100개 이상의 병원을 컨설팅하면서 많은 케이스를 봐왔어요.
+수술 없이도 충분히 좋아지는 경우가 꽤 있어요.
+
+[척추 수술 결정 전 체크리스트 💡]
+
+① 비수술 치료를 충분히 해봤나요?
+   물리치료·주사치료·운동치료를 3~6개월 이상
+   해본 후에 수술을 고려하는 게 원칙이에요.
+
+② Second Opinion을 받으셨나요?
+   척추 수술은 최소 2~3군데에서 진단을 받아보세요.
+   "수술 안 해도 된다"는 의사가 더 믿을 만할 수도 있어요.
+
+③ 의사에게 이것을 물어보세요
+   → "수술 안 하면 어떻게 됩니까?"
+   → "이 수술을 1년에 몇 건 하십니까?"
+
+수술을 권유받으셨다면 당장 결정하지 마시고 DM 주세요.
+같이 검토해 드릴게요.
+
+#척추수술 #허리디스크 #척추협착증 #부모님건강 #반바니 #hosp_coaching`
+    }
+
+  }; // end SCRIPTS
+</script>
+
+</body>
+</html>
